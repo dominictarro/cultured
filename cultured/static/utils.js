@@ -7,7 +7,7 @@
  * @param {Array<Any>} array 
  * @returns Randomly sorted `array`
  */
-function shuffle(array) {
+ export function shuffle(array) {
     let currentIndex = array.length,  randomIndex;
 
     // While there remain elements to shuffle.
@@ -32,7 +32,7 @@ function shuffle(array) {
  * @param {Array<Any>} self 
  * @returns Boolean stating `index` points to the first occurence of `value`
  */
-function onlyUnique(value, index, self) {
+ export function onlyUnique(value, index, self) {
     // First occuring element == value's index is returned
     return self.indexOf(value) === index;
 }
@@ -42,7 +42,7 @@ function onlyUnique(value, index, self) {
  * @param {Array<Any>} array 
  * @returns `array`'s unique values
  */
-function unique(array) {
+ export function unique(array) {
     return array.filter(onlyUnique);
 }
 
@@ -51,7 +51,16 @@ function unique(array) {
  * @param {Array<Any>} array 
  * @returns A random value
  */
-function chooseRandom(array) {
+ export function chooseRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
+/**
+ * Performs a deep clone of the data structure.
+ * 
+ * @param {Any} struct Any data structure
+ * @returns A copy of the data structure
+ */
+export function deepClone(struct) {
+    return JSON.parse(JSON.stringify(struct));
+}
