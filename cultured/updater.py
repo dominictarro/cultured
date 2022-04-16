@@ -97,7 +97,7 @@ def format_memes_from_api_result(api_result: dict) -> list:
             doc.pop('box_count')
             doc.pop('width')
             doc.pop('height')
-            memes.append(solution)
+            memes.append(doc)
         except Exception:
             ...
             # TODO log, try to resolve
