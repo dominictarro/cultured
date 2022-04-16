@@ -3,6 +3,7 @@
  */
 import { deepClone } from "./utils";
 import { updateLocalGameState } from "./data";
+import { chooseRandom, unique} from "./utils";
 
 const N_ATTEMPTS = 6;
 
@@ -167,7 +168,7 @@ export function tryResponse(gameState, response) {
     gameState.boardState[gameState.rowIndex] = response;
     gameState.evaluations[gameState.rowIndex] = responseEvaluation;
     gameState.rowIndex++;
-    const isCorrect = evaluationIsCorrect(evaluation);
+    const isCorrect = evaluationIsCorrect(responseEvaluation);
 
     // Update status accordingly
     if (isCorrect) {

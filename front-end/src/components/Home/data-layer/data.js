@@ -27,8 +27,12 @@ export function getLocalGameState() {
  * @returns {Promise<JSON>} Meme state JSON
  */
  export async function getRemoteMemeState() {
-    const response = await fetch('/today');
-    return await response.json();
+    try {
+        const response = await fetch('/today');
+        return response.json();
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /**
