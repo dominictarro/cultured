@@ -14,7 +14,7 @@ logger = logging.getLogger('server')
 app = Flask(__name__, static_folder='front-end')
 app.json_encoder = DailyMemeStateEncoder
 state = DailyMemeState(None, None)
-updater = begin_daily_meme_state_updater(state)
+updater = begin_daily_meme_state_updater(state, 60)
 # Ensure the state is loaded before the server actually loads
 while state.memes is None:
     ...
