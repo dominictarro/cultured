@@ -8,8 +8,8 @@ class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state ={
-            maxGuesses: 6,
-            numberChoices: 3
+            numberChoices: 4,
+            options: {}
         }
       
       }
@@ -32,7 +32,7 @@ class HomePage extends Component {
             // Automatically converts from UTC to local time
             const dayOfLastUpdate = new Date(gameState.updatedAt).getDay();
             // Expired game if false
-            if (today == dayOfLastUpdate) {
+            if (today === dayOfLastUpdate) {
                 return gameState;
             }
         }
@@ -46,18 +46,15 @@ class HomePage extends Component {
         return window.localStorage.getItem(gameStateKey);
     }
     buildDropDown(){
-        var indents = [];      
-        let testOptions = [
-            {value: 'one', label: 'two'}
-        ]
-        for (var i = 0; i < this.state.numberChoices; i++) {
-            indents.push(<li className='gameOption'><GameDropDowns numberChoices={this.state.numberChoices} className='custom-select' options={testOptions}></GameDropDowns> </li>);
-        }
-        return indents;
+        let options = []
+        //for options provided loop through and push value and label to obj and then push to the array of options and set options state
+
     }
   render() {
     // let options = this.buildDropDown()
-    let answers = ['blah', 'me', 'you']
+
+    //get options from the api and build the drop down
+    let answers = ['blah', 'me', 'you', 'and', 'you']
     let testOptions = [
         {value: 'one', label: 'two'},
          {value: 'two', label: 'three'},
