@@ -169,6 +169,13 @@ export function tryResponse(gameState, response) {
     gameState.rowIndex++;
     const isCorrect = evaluationIsCorrect(evaluation);
 
+    // Update status accordingly
+    if (isCorrect) {
+        gameState.gameStatus = "WIN";
+    } else if (gameState.rowIndex > 5) {
+        gameState.gameStatus = "LOSE";
+    }
+
     // Call after evaluationIsCorrect
     // If something failed early on, will not affect local store and page can
     // be validly reloaded
