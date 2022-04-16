@@ -1,0 +1,42 @@
+version: 1
+disable_existing_loggers: true
+formatters:
+    brief:
+        format: '%(asctime)s %(message)s'
+    precise:
+        format: '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
+handlers:
+    console:
+        class: logging.StreamHandler
+        formatter: brief
+        level: INFO
+        stream: ext://sys.stdout
+    file:
+        class: logging.handlers.RotatingFileHandler
+        formatter: precise
+        filename: logconfig.log
+        maxBytes: 10000000 # 10mb
+        backupCount: 3
+loggers:
+    root:
+        handlers:
+            - console
+            - file
+        level: WARNING
+        propagate: false
+    __main__:
+        handlers:
+            - console
+            - file
+        level: WARNING
+        propagate: true
+    server:
+        handlers:
+            - file
+        level: INFO
+        propagate: false
+    updater:
+        handlers:
+            - file
+        level: INFO
+        propagate: false
