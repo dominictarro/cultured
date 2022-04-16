@@ -1,6 +1,7 @@
 /**
  * Methods for creating, operating, and completing games in the client.
  */
+import { deepClone } from "./utils";
 
 const N_ATTEMPTS = 6;
 
@@ -69,3 +70,65 @@ export function buildNewGameState(memeState) {
     gameState['columns'] = gameState.meme.solution.length;
     return gameState;
 }
+
+/**
+ * Evaluates the user's `response` against the game's true solution. Creates an array
+ * of identical length populated by 'correct', 'present', or 'absent'.
+ * 
+ * 'correct'    = Words that are properly placed
+ * 'present'    = Words that exist in the solution, but in a different place
+ * 'absent'     = Words that should not be in the solution
+ * 
+ * Each word in the solution can be used for one evaluation. If that word is 'correct',
+ * its reuse later in the response is not 'present'.
+ * 
+ * @param {Array<String>} gameSolution 
+ * @param {Array<String>} response 
+ * @returns {Array<String>} Array representing the user's results
+ */
+export function evaluateResponse(gameSolution, response) {
+    var solution = deepClone(gameSolution);
+    var evaluation = new Array(solution.length);
+    var i;
+    // Check 'correct' answers, then check 'present' or set 'absent'
+
+    // Check 'correct'
+    for (i = 0; i < solution.length; i++) {
+        if (response[i] == solution[i]) {
+            evaluation[i] = 'correct';
+            // Setting the solution at index to null forces each word to be used once
+            // for evaluations.
+            // Example 1
+            //      solution = ['HAPPY', 'GILLMORE', 'PRODUCTIONS']
+            //      response = ['GILLMORE', 'HAPPY', 'GILLMORE']
+            //      evaluation = ['present', 'present', 'absent']
+            // 
+            // If the solution contains the word more than once, it will still be
+            // useable that exact number of occurences.
+            // 
+            // Example 2
+            //      solution = ['OPRAH', 'YOU', 'GET', 'A', 'CAR', 'EVERYBODY', 'GETS', 'A', 'CAR']
+            //      response = ['OPRAH', 'A', 'A', 'MOM', 'A', 'GETS', 'GILLMORE', 'CAR']
+            //      evaluation = ['correct', 'present', 'present', 'absent', 'absent', 'correct', 'absent', 'correct']
+            //
+            // Example 3
+            //      solution = ['HAPPY', 'GILLMORE', 'PRODUCTIONS']
+            //      response = ['HAPPY', 'HAPPY', 'GILLMORE']
+            //      evaluation = ['correct', 'absent', 'present']
+            solution[i] = null;
+        }
+    }
+
+    // Check for 'present' or 'absent'
+    for (i = 0; i < solution.length; i++) {
+        if (solution.includes(response[i])) {
+            evaluation[i] = 'present';
+        } else {
+            evaluation[i] = 'absent';
+        }
+        solution[i] = null;
+    }
+
+    return evaluation;
+}
+
