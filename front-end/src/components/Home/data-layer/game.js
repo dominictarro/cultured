@@ -151,8 +151,8 @@ export function evaluationIsCorrect(evaluation) {
 }
 
 /**
- * Updates the `gameState` object and local instance with a response and
- * its evaluation.
+ * Evaluates the `response` against the `gameState`. Updates the `gameState` local instance and
+ * returns whether or not the response is correct.
  * 
  * @param {JSON} gameState 
  * @param {Array<String>} response 
