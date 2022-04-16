@@ -1,12 +1,13 @@
 /**
  * Data layer of the client application. Read & write methods.
  */
+import { buildNewGameState } from './game.js';
 
 const gameStateKey = 'cultured-game-state';
 
 /**
  * Gets the game's locally stored state.
- * @returns {JSON} State JSON
+ * @returns {JSON} Game state JSON
  */
 export function getLocalGameState() {
     return window.localStorage.getItem(gameStateKey);
@@ -14,7 +15,7 @@ export function getLocalGameState() {
 
 /**
  * Updates the locally stored state.
- * @param {JSON} gameState State JSON
+ * @param {JSON} gameState Game state JSON
  */
  export function updateLocalGameState(gameState) {
     window.localStorage.setItem(gameStateKey, gameState);
@@ -23,7 +24,7 @@ export function getLocalGameState() {
 /**
  * Requests the server's meme state.
  * @async
- * @returns {Promise<JSON>} State JSON
+ * @returns {Promise<JSON>} Meme state JSON
  */
  export async function getRemoteMemeState() {
     const response = await fetch('/today');
@@ -33,7 +34,7 @@ export function getLocalGameState() {
 /**
  * Gets the gameState. Returns null if expired or not initialized.
  * 
- * @returns {JSON} State JSON
+ * @returns {JSON} Game state JSON
  */
  export function getGameState() {
     var gameState = getLocalGameState();
@@ -47,6 +48,7 @@ export function getLocalGameState() {
             return gameState;
         }
     }
+    // If it reaches here, the game expired or it is a new player
+    const memeState = getRemoteMemeState();
+    return buildNewGameState(memeState);
 }
-
-
