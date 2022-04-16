@@ -2,6 +2,7 @@
  * Methods for creating, operating, and completing games in the client.
  */
 import { deepClone } from "./utils";
+import { updateLocalGameState } from "./data";
 
 const N_ATTEMPTS = 6;
 
@@ -132,3 +133,45 @@ export function evaluateResponse(gameSolution, response) {
     return evaluation;
 }
 
+/**
+ * Checks if all elements of an `evaluation` are 'correct'. Returns true if so.
+ * 
+ * @param {Array<String>} evaluation A response's evaluation
+ * @returns {Boolean} All elements == 'correct'
+ */
+export function evaluationIsCorrect(evaluation) {
+    // Check each element of the evaluation
+    // If the element is not correct, return false
+    for (const el of evaluation) {
+        if (el != 'correct') {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Updates the `gameState` object and local instance with a response and
+ * its evaluation.
+ * 
+ * @param {JSON} gameState 
+ * @param {Array<String>} response 
+ * @returns {Boolean} The response is correct
+ */
+export function tryResponse(gameState, response) {
+    // RULE: 6 entries
+    if (gameState.rowIndex > 5) {
+        return false;
+    }
+    const responseEvaluation = evaluateResponse(gameState.meme.solution, response);
+    gameState.boardState[gameState.rowIndex] = response;
+    gameState.evaluations[gameState.rowIndex] = responseEvaluation;
+    gameState.rowIndex++;
+    const isCorrect = evaluationIsCorrect(evaluation);
+
+    // Call after evaluationIsCorrect
+    // If something failed early on, will not affect local store and page can
+    // be validly reloaded
+    updateLocalGameState(gameState);
+    return isCorrect;
+}
