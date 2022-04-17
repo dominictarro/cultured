@@ -93,41 +93,16 @@ export function evaluateResponse(gameSolution, response) {
     var i;
     // Check 'correct' answers, then check 'present' or set 'absent'
 
-    // Check 'correct'
+    // Check for 'present' or 'absent'
     for (i = 0; i < solution.length; i++) {
         if (response[i] === solution[i]) {
             evaluation[i] = 'correct';
-            // Setting the solution at index to null forces each word to be used once
-            // for evaluations.
-            // Example 1
-            //      solution = ['HAPPY', 'GILLMORE', 'PRODUCTIONS']
-            //      response = ['GILLMORE', 'HAPPY', 'GILLMORE']
-            //      evaluation = ['present', 'present', 'absent']
-            // 
-            // If the solution contains the word more than once, it will still be
-            // useable that exact number of occurences.
-            // 
-            // Example 2
-            //      solution = ['OPRAH', 'YOU', 'GET', 'A', 'CAR', 'EVERYBODY', 'GETS', 'A', 'CAR']
-            //      response = ['OPRAH', 'A', 'A', 'MOM', 'A', 'GETS', 'GILLMORE', 'CAR']
-            //      evaluation = ['correct', 'present', 'present', 'absent', 'absent', 'correct', 'absent', 'correct']
-            //
-            // Example 3
-            //      solution = ['HAPPY', 'GILLMORE', 'PRODUCTIONS']
-            //      response = ['HAPPY', 'HAPPY', 'GILLMORE']
-            //      evaluation = ['correct', 'absent', 'present']
-            solution[i] = null;
         }
-    }
-
-    // Check for 'present' or 'absent'
-    for (i = 0; i < solution.length; i++) {
-        if (solution.includes(response[i])) {
+        else if (solution.includes(response[i])) {
             evaluation[i] = 'present';
         } else {
             evaluation[i] = 'absent';
         }
-        solution[i] = null;
     }
 
     return evaluation;

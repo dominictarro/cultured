@@ -95,6 +95,7 @@ export function updateLocalMemeState(memeState) {
  */
 export async function getMemeState() {
     var memeState = getLocalMemeState();
+    console.log(memeState)
     // New player if false
     if (memeState !== null) {
         const today = new Date().getDay();
