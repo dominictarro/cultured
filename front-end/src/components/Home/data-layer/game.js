@@ -65,7 +65,7 @@ export function buildNewGameState(memeState) {
         'rowIndex': 0,
         'meme': chooseRandom(memeState.choices)
     };
-    gameState['wordBank'] = unique(buildWordBank(memeState));
+    gameState['wordBank'] = unique(buildWordBank(memeState.choices));
     gameState['boardState'] = new Array(N_ATTEMPTS);
     gameState['evaluations'] = new Array(N_ATTEMPTS);
     gameState['columns'] = gameState.meme.solution.length;
