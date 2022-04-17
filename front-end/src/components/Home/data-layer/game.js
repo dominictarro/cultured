@@ -1,8 +1,8 @@
 /**
  * Methods for creating, operating, and completing games in the client.
  */
-import { deepClone } from "./utils";
 import { updateLocalGameState } from "./data";
+import { arrayCounts, chooseRandom, deepClone, unique } from "./utils";
 
 const N_ATTEMPTS = 6;
 
@@ -151,12 +151,60 @@ export function evaluationIsCorrect(evaluation) {
 }
 
 /**
+ * Removes absent words. Does not remove an absent word if it has a 'correct' or 'present' use
+ * elsewhere in the response.
+ * 
+ * Example 1
+ * ```javascript
+ * wordBank = ['A', 'B', 'C', 'D'];
+ * response = ['A', 'B', 'C'];
+ * evaluation = ['correct', 'absent', 'present'];
+ * wordBank = removeAbsetFromWordBank(response, evaluation, wordBank);
+ * // wordBank should now equal ['A', 'C', 'D']
+ * ```
+ * 
+ * Example 2
+ * ```javascript
+ * wordBank = ['A', 'B', 'C', 'D'];
+ * response = ['A', 'A', 'C', 'B'];
+ * evaluation = ['correct', 'absent', 'present', 'absent'];
+ * wordBank = removeAbsetFromWordBank(response, evaluation, wordBank);
+ * // wordBank should now equal ['A', 'C', 'D']
+ * // 'A' was not removed because one instance was 'correct'
+ * ```
+ * 
+ * @param {Array<String>} response 
+ * @param {Array<String>} evaluation 
+ * @param {JSON} gameState 
+ */
+export function removeAbsetFromWordBank(response, evaluation, wordBank) {
+    // The number of times each response word is used
+    var counts = arrayCounts(response);
+    var r;
+    var k;
+    for (var i = 0; i < response.length; i++) {
+        if (evaluation[i] == 'absent') {
+            r = response[i];
+            counts[r]--;
+            if (counts[r] == 0) {
+                // counts[r] == 0 is met when
+                // 1. The word is absent
+                // 2. There is no 'correct' or 'present' occurrence of the word (due to duplicates)
+                k = wordBank.indexOf(r);
+                wordBank.splice(k,1);
+            }
+        }
+    }
+    return wordBank;
+}
+
+/**
  * Evaluates the `response` against the `gameState`. Updates the `gameState` local instance and
- * returns whether or not the response is correct.
+ * returns the evaluation's results.
  * 
  * @param {JSON} gameState 
  * @param {Array<String>} response 
- * @returns {Boolean} The response is correct
+ * @returns {Array<String>} The response is correct
  */
 export function tryResponse(gameState, response) {
     // RULE: 6 entries
@@ -167,18 +215,20 @@ export function tryResponse(gameState, response) {
     gameState.boardState[gameState.rowIndex] = response;
     gameState.evaluations[gameState.rowIndex] = responseEvaluation;
     gameState.rowIndex++;
-    const isCorrect = evaluationIsCorrect(evaluation);
+    const isCorrect = evaluationIsCorrect(responseEvaluation);
 
     // Update status accordingly
     if (isCorrect) {
         gameState.gameStatus = "WIN";
     } else if (gameState.rowIndex > 5) {
         gameState.gameStatus = "LOSE";
+    } else {
+        // Didn't get all correct, still have guesses remaining: update the word bank
+        gameState.wordBank = removeAbsetFromWordBank(response, responseEvaluation, gameState.wordBank);
     }
 
     // Call after evaluationIsCorrect
-    // If something failed early on, will not affect local store and page can
-    // be validly reloaded
+    // If something failed early on, local store will be unaffected and page can be reloaded
     updateLocalGameState(gameState);
-    return isCorrect;
+    return responseEvaluation;
 }

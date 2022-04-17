@@ -64,3 +64,19 @@
 export function deepClone(struct) {
     return JSON.parse(JSON.stringify(struct));
 }
+
+/**
+ * Counts the number of occurrences of each value in an array.
+ * 
+ * @param {Array<String | Integer>} array 
+ */
+export function arrayCounts(array) {
+    var counts = {};
+    for (const el of array) {
+        if (el in counts) {
+            counts[el]++;
+        } else {
+            counts[el] = 1;
+        }
+    }
+}
