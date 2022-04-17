@@ -43,12 +43,12 @@ export function getLocalGameState() {
  export function getGameState() {
     var gameState = getLocalGameState();
     // New player if false
-    if (gameState != null) {
+    if (gameState !== null) {
         const today = new Date().getDay();
         // Automatically converts from UTC to local time
         const dayOfLastUpdate = new Date(gameState.updatedAt).getDay();
         // Expired game if false
-        if (today == dayOfLastUpdate) {
+        if (today === dayOfLastUpdate) {
             return gameState;
         }
     }

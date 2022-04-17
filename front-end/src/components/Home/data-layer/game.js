@@ -95,7 +95,7 @@ export function evaluateResponse(gameSolution, response) {
 
     // Check 'correct'
     for (i = 0; i < solution.length; i++) {
-        if (response[i] == solution[i]) {
+        if (response[i] === solution[i]) {
             evaluation[i] = 'correct';
             // Setting the solution at index to null forces each word to be used once
             // for evaluations.
@@ -143,7 +143,7 @@ export function evaluationIsCorrect(evaluation) {
     // Check each element of the evaluation
     // If the element is not correct, return false
     for (const el of evaluation) {
-        if (el != 'correct') {
+        if (el !== 'correct') {
             return false;
         }
     }
@@ -183,10 +183,10 @@ export function removeAbsetFromWordBank(response, evaluation, wordBank) {
     var r;
     var k;
     for (var i = 0; i < response.length; i++) {
-        if (evaluation[i] == 'absent') {
+        if (evaluation[i] === 'absent') {
             r = response[i];
             counts[r]--;
-            if (counts[r] == 0) {
+            if (counts[r] === 0) {
                 // counts[r] == 0 is met when
                 // 1. The word is absent
                 // 2. There is no 'correct' or 'present' occurrence of the word (due to duplicates)
