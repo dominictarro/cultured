@@ -9,6 +9,7 @@ python-dotenv = "*"
 requests = "*"
 pyyaml = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
 pylint = "*"
