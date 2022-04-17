@@ -5,10 +5,13 @@ from typing import Dict, List, Union
 import requests
 import threading
 import time
+import traceback
 
+from .logs import logging
 from .state import DailyMemeState
 from .utils import time_until_end_of_day
 
+logger = logging.getLogger('updater')
 
 
 def get_memes_from_api() -> dict:
@@ -67,16 +70,12 @@ def format_memes_from_api_result(api_result: dict) -> list:
         {
             "id": "181913649",
             "solution": ["Drake", "Hotline", "Bling"],
-            "url": "https://i.imgflip.com/30b1gx.jpg",
-            "width": 1200,
-            "height": 1200
+            "url": "https://i.imgflip.com/30b1gx.jpg"
         },
         {
             "id": "87743020",
             "solution": ["Two", "Buttons"],
-            "url": "https://i.imgflip.com/1g8my4.jpg",
-            "width": 600,
-            "height": 908,
+            "url": "https://i.imgflip.com/1g8my4.jpg"
         },
     ]
     ```
@@ -99,57 +98,68 @@ def format_memes_from_api_result(api_result: dict) -> list:
             doc.pop('height')
             memes.append(doc)
         except Exception:
-            ...
-            # TODO log, try to resolve
+            logger.error(f"could not format meme document: {traceback.format_exc()}")
 
     return memes
 
-def update_meme_state_from_api(state: DailyMemeState):
+def update_meme_state_from_api(state: DailyMemeState) -> bool:
     """Queries the API and updates the state object with the query's formatted
     result.
 
     :param state: State object to update
     :type state: DailyMemeState
+    :return: Successful update
+    :rtype: Boolean
     """
     try:
         result = get_memes_from_api()
     except Exception:
-        ...
-        # TODO log & handle
+        logger.critical(f"api provided no dank memes: {traceback.format_exc()}")
+        return False
+
     try:
         memes = format_memes_from_api_result(result)
     except Exception:
-        ...
-        # TODO log & handle
+        logger.critical(f"failed to format memes: {traceback.format_exc()}")
+        return False
 
     state.update(memes)
+    return True
 
-def midnight_update_loop(state: DailyMemeState):
+def midnight_update_loop(state: DailyMemeState, retry_wait: Union[float, int]):
     """Forever updates the `DailyMemeState` object at midnight.
 
     :param state: State object to update daily at midnight
     :type state: DailyMemeState
+    :param retry_wait: Seconds to sleep after a failed state update
+    :type retry_wait: float or int
     """
     while True:
         try:
-            update_meme_state_from_api(state)
-            sleep_duration = time_until_end_of_day()
-            time.sleep(sleep_duration)
+            logging.info("updating meme state")
+            if update_meme_state_from_api(state):
+                sleep_duration = time_until_end_of_day()
+                time.sleep(sleep_duration)
+                # skip retry
+                continue
         except Exception:
-            ...
-            # TODO log & handle
+            logger.critical(f"unexpected error during update: {traceback.format_exc()}")
+        time.sleep(retry_wait)
+        logger.info("retrying update")
 
-def begin_daily_meme_state_updater(state: DailyMemeState) -> threading.Thread:
+def begin_daily_meme_state_updater(state: DailyMemeState, retry_wait: Union[float, int]) -> threading.Thread:
     """Begins a thread that updates the state object every day at midnight.
 
     :param state: State object to be updated
     :type state: DailyMemeState
+    :param retry_wait: Seconds to sleep after a failed update
+    :type retry_wait: float or int
     :return: Updater thread
     :rtype: threading.Thread
     """
     state_updater_thread = threading.Thread(
         target=midnight_update_loop,
-        args=(state,),
+        args=(state,retry_wait),
         name="StateUpdaterThread",
         daemon=True
     )
