@@ -33,6 +33,7 @@ export function getLocalGameState() {
  * @returns {JSON} Game state JSON
  */
  export async function getGameState() {
+     console.log(getLocalGameState())
     var gameState = getLocalGameState();
     // New player if false
     if (gameState !== null) {
@@ -96,6 +97,7 @@ export function getLocalGameState() {
  */
 export async function getMemeState() {
     var memeState = getLocalMemeState();
+    console.log(memeState)
     // New player if false
     if (memeState !== null) {
         const today = new Date().getDay();
