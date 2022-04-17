@@ -45,7 +45,7 @@ export function getLocalGameState() {
         }
     }
     // If it reaches here, the game expired or it is a new player
-    const memeState = getMemeState();
+    const memeState = await getMemeState();
     gameState = buildNewGameState(memeState);
     updateLocalGameState(gameState);
     return gameState;
