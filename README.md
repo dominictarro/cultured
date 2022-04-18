@@ -35,5 +35,6 @@ Meme templates are acquired everyday from [imgflip](https://api.imgflip.com/)'s 
 
 Depending on cached images and network speed, this may take a few minutes.
 
-1. Run `docker-compose up -d`
-2. Go to [http://localhost:3000](http://localhost:3000)
+1. Run `docker-compose build` if you haven't already.
+2. Run `docker-compose up -d`
+3. Go to [http://localhost:3000](http://localhost:3000)
