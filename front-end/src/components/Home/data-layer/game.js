@@ -115,8 +115,15 @@ export function evaluateResponse(gameSolution, response) {
     for (i = 0; i < solution.length; i++) {
         if (response[i] === solution[i]) {
             evaluation[i] = 'correct';
+            solution[i] = null;
         }
-        else if (solution.includes(response[i])) {
+    }
+
+    for (i = 0; i < solution.length; i++) {
+        if (solution[i] === null) {
+            continue;
+        }
+        if (solution.includes(response[i])) {
             evaluation[i] = 'present';
         } else {
             evaluation[i] = 'absent';
