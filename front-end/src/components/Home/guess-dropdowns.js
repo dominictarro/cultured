@@ -6,9 +6,19 @@ const customStyles = {
     background: state.selectProps.className == 'absent' ? 'red' : state.selectProps.className == 'present' ? 'yellow' : state.selectProps.className == 'correct' ? 'green' : '#ffffff'
     
   }
-  ),
+  ),  option: (styles, { isDisabled }) => {
+    return {
+      ...styles,
+      backgroundColor: isDisabled ? "#A0A0A0" : "#272727",
+      color: "#FFFFFF",
+      "font-family": "Roboto",
+      "text-transform": "uppercase"
+    }
+  }
 
 };
+
+
 const GameDropDowns = (props) => {
   console.log(props)
   let value =  '' 
