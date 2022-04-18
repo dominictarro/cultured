@@ -4,7 +4,8 @@ import HomePage from './components/Home/home-page'
 import { getGameState } from './components/Home/data-layer/data';
 function App() {
   
-
+  getGameState();
+  
   return (
     <>
 

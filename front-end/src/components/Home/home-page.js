@@ -13,7 +13,8 @@ class HomePage extends Component {
             numberChoices: 4,
             options: [],
             answers: [],
-            choices: []
+            choices: [],
+            guessNumber: 1
         }
       this.buildDropDown = this.buildDropDown.bind(this)
       this.setupGame = this.setupGame.bind(this);
@@ -23,7 +24,8 @@ class HomePage extends Component {
       }
 
     async  componentDidMount(){
-      await getGameState();
+      // let response =  getGameState();
+      // console.log(response)
       this.setupGame()
 
     }
@@ -31,13 +33,12 @@ class HomePage extends Component {
     setupGame(){
 
       let src = getLocalGameState()
-
+      console.log(src)
       let url = src.meme.url
       let  answers = src.meme.solution
       let correctAnswer = src.meme.solution;
       this.setState({url: url, answers: answers, correctAnswer: correctAnswer})
-      console.log(src)
-    
+  
       this.buildDropDown(src.wordBank)
 
     }
@@ -51,12 +52,25 @@ class HomePage extends Component {
 
     }
     checkSubmittal(){
-      let correct = isEqual(this.state.choices, this.state.correctAnswer)
-      let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
-      let winLose = 'Win' ? correct : 'Lose'
-
-      if(!correct){
-        this.updateLocal(winLose)
+      if(this.state.guessNumber==6){
+        alert(`Better luck next time the correct answer was ${this.state.correctAnswer.toString().replaceAll(',', ' ')}`)
+      }
+      else if(this.state.choices.length !==  this.state.correctAnswer.length){
+          alert('Fill out all required boxes before submitting')
+      }
+      else if(isEqual(this.state.choices, this.state.correctAnswer)){
+        alert('Congrats you guessed correctly')
+      
+      }else{
+        let guess = this.state.guessNumber
+        guess++
+        let correct = isEqual(this.state.choices, this.state.correctAnswer)
+        let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
+        let winLose = 'Win' ? correct : 'Lose'
+        this.setState({guessNumber: guess, choices: []})
+        if(!correct){
+          this.updateLocal(winLose)
+        }
       }
     }
     onChange(item, index){
@@ -70,19 +84,20 @@ class HomePage extends Component {
 
   updateLocal(evaluations){
     var existing = localStorage.getItem('cultured-game-state');
-    let  newArray = existing['evaluations']
-
     // If no existing data, create an array
     // Otherwise, convert the localStorage string to an array
-    existing = existing ? existing.split(',') : [];
     
     // Add new data to localStorage Array
-    existing.push(evaluations);
-    
-    // Save back to localStorage
-    localStorage.setItem('evaluations', existing.toString());
+
   }
   render() {
+    let disable1 =  this.state.guessNumber ==  1 ? false : true   
+    let disable2 =  this.state.guessNumber ==  2 ? false : true 
+    let disable3 =  this.state.guessNumber ==  3 ? false : true 
+    let disable4 =  this.state.guessNumber ==  4 ? false : true 
+    let disable5 =  this.state.guessNumber ==  5 ? false : true 
+    let disable6 =  this.state.guessNumber ==  6 ? false : true 
+
     if (!this.state.options) {
       return <div />
   }
@@ -101,6 +116,7 @@ class HomePage extends Component {
                       {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         onChange={(item)=>this.onChange(item, index)}
+                        disabled={disable1}
                         item={item}
                         index={index}
                           options={this.state.options}
@@ -113,46 +129,66 @@ class HomePage extends Component {
                       {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         onChange={(item)=>this.onChange(item, index)}
+                        disabled={disable2}
                         item={item}
                         index={index}
                           options={this.state.options}
                           />)}
+                            <button onClick={this.checkSubmittal}>
+                          Check
+                        </button>
                     </li> 
                     <li className='guessRows'>
                       {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         onChange={(item)=>this.onChange(item, index)}
                         item={item}
+                        disabled={disable3}
                         index={index}
                           options={this.state.options}
                           />)}
+                            <button onClick={this.checkSubmittal}>
+                          Check
+                        </button>
                     </li> 
                     <li className='guessRows'>
                       {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         onChange={(item)=>this.onChange(item, index)}
+                        disabled={disable4}
                         item={item}
                         index={index}
                           options={this.state.options}
                           />)}
+                            <button onClick={this.checkSubmittal}>
+                          Check
+                        </button>
                     </li> 
                     <li className='guessRows'>
                         {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         onChange={(item)=>this.onChange(item, index)}
                         item={item}
+                        disabled={disable5}
                         index={index}
                           options={this.state.options}
                           />)}
+                            <button onClick={this.checkSubmittal}>
+                          Check
+                        </button>
                     </li> 
                     <li className='guessRows'>
                       {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         item={item}
                         index={index}
+                        disabled={disable6}
                         onChange={(item)=>this.onChange(item, index)}
                         options={this.state.options}
                           />)}
+                            <button onClick={this.checkSubmittal}>
+                          Check
+                        </button>
                     </li>
                 </ul>
              </div> 
