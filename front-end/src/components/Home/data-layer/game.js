@@ -2,7 +2,7 @@
  * Methods for creating, operating, and completing games in the client.
  */
 import { updateLocalGameState } from "./data";
-import { arrayCounts, chooseRandom, deepClone, shuffle, unique } from "./utils";
+import { arrayCounts, chooseRandom, deepClone, chooseRandomNoReplacement, unique, shuffle } from "./utils";
 
 const N_ATTEMPTS = 6;
 
@@ -65,7 +65,18 @@ export function buildNewGameState(memeState) {
         'rowIndex': 0,
         'meme': chooseRandom(memeState.choices)
     };
-    gameState['wordBank'] = unique(buildWordBank(memeState.choices)).sort();
+
+    // Select a subset of words that includes the solution words
+    gameState['wordBank'] = unique(gameState.meme.solution);
+    // Filter out words already in the solution
+    const remainingWordBank = unique(buildWordBank(memeState.choices)).filter(
+        function(el) {
+            return gameState.wordBank.indexOf(el) === -1;
+        }
+    );
+    // Choose a number of non-solution words to hit 50 options
+    gameState.wordBank.push(...chooseRandomNoReplacement(remainingWordBank, 50 - gameState.wordBank.length));
+    gameState.wordBank.sort();
     gameState['boardState'] = new Array(N_ATTEMPTS);
     gameState['evaluations'] = new Array(N_ATTEMPTS);
     gameState['columns'] = gameState.meme.solution.length;
