@@ -1,2 +1,2 @@
 proxy: gunicorn wsgi:app
-web: cd front-end && npm start
+#web: cd front-end && npm start
