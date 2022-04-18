@@ -9,9 +9,9 @@
  */
  export function shuffle(array) {
     let currentIndex = array.length,  randomIndex;
-
+    array = deepClone(array);
     // While there remain elements to shuffle.
-    while (currentIndex != 0) {
+    while (currentIndex !== 0) {
   
       // Pick a remaining element.
       randomIndex = Math.floor(Math.random() * currentIndex);
@@ -63,4 +63,32 @@
  */
 export function deepClone(struct) {
     return JSON.parse(JSON.stringify(struct));
+}
+
+/**
+ * Counts the number of occurrences of each value in an array.
+ * 
+ * @param {Array<String | Integer>} array 
+ */
+export function arrayCounts(array) {
+    var counts = {};
+    for (const el of array) {
+        if (el in counts) {
+            counts[el]++;
+        } else {
+            counts[el] = 1;
+        }
+    }
+}
+
+/**
+ * Chooses `size` random elements from an array with no replacement.
+ * @param {Array} array Array to select from
+ * @param {Integer} size Number of elements to select
+ * @returns {Array} Random subset of the array
+ */
+export function chooseRandomNoReplacement(array, size) {
+    array = shuffle(array);
+    var randomIndex = Math.floor(Math.random()*(array.length - size));
+    return array.slice(randomIndex, randomIndex + size)
 }
