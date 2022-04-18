@@ -17,6 +17,7 @@ class HomePage extends Component {
             answers: [],
             choices: [],
             evaluations: [],
+            winner: false,
 
             guessNumber: 0
         }
@@ -37,12 +38,16 @@ class HomePage extends Component {
       
         let url = src.meme.url
         let lastGuess = 1
-        if( src.lastGuess !== undefined){
+        let winStatus = false
+        if(src.lastGuess !== undefined){
           lastGuess = src.lastGuess + 1
         }
+        if(src.gameStatus =='Winner') winStatus = true
+        
+
         let  answers = src.meme.solution
         let correctAnswer = src.meme.solution;
-        this.setState({url: url, answers: answers, correctAnswer: correctAnswer , memeState: src, guessNumber : lastGuess})
+        this.setState({url: url, answers: answers, correctAnswer: correctAnswer , memeState: src, guessNumber : lastGuess, winner: winStatus })
     
         this.buildDropDown(src.wordBank)
 
@@ -57,7 +62,22 @@ class HomePage extends Component {
     this.setState({options: options})
 
     }
-  
+
+    markWinner(){
+      let memeState = this.state.memeState
+      memeState.gameStatus = 'Winner'
+      window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
+      let evaluationsArray = clone(this.state.evaluations)
+      let guess = this.state.guessNumber
+      guess++
+      let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
+      
+      evaluationsArray.push(check)
+      this.setState({evaluations: evaluationsArray, winner: true})
+
+      this.updateLocal(evaluationsArray[0], this.state.choices)
+    }
+
     checkSubmittal(){
       if(this.state.guessNumber==6){
         alert(`Better luck next time the correct answer was ${this.state.correctAnswer.toString().replaceAll(',', ' ')}`)
@@ -66,11 +86,7 @@ class HomePage extends Component {
           alert('Fill out all required boxes before submitting')
       }
       else if(isEqual(this.state.choices, this.state.correctAnswer)){
-        let memeState = this.state.memeState
-        memeState.gameStatus = 'Winner'
-        window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
-        alert('Congrats you guessed correctly')
-
+          this.markWinner()
     
       }else{
         let evaluationsArray = clone(this.state.evaluations)
@@ -117,12 +133,12 @@ class HomePage extends Component {
 
 
   render() {
-    let disable1 =  this.state.guessNumber ==  1 ? false : true   
-    let disable2 =  this.state.guessNumber ==  2 ? false : true 
-    let disable3 =  this.state.guessNumber ==  3 ? false : true 
-    let disable4 =  this.state.guessNumber ==  4 ? false : true 
-    let disable5 =  this.state.guessNumber ==  5 ? false : true 
-    let disable6 =  this.state.guessNumber ==  6 ? false : true 
+    let disable1 = this.state.winner ? true: this.state.guessNumber ==  1 ? false : true   
+    let disable2 =  this.state.winner ? true: this.state.guessNumber ==  2 ? false : true 
+    let disable3 =  this.state.winner ? true: this.state.guessNumber ==  3 ? false : true 
+    let disable4 =  this.state.winner ? true: this.state.guessNumber ==  4 ? false : true 
+    let disable5 =  this.state.winner ? true: this.state.guessNumber ==  5 ? false : true 
+    let disable6 =  this.state.winner ? true: this.state.guessNumber ==  6 ? false : true 
     
     if (this.state.options.length == 0) {
       return <div />
