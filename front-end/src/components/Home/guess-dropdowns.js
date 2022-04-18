@@ -3,14 +3,16 @@ import Select from "react-select";
 const customStyles = {
   control: (base, state) => ({
     ...base,
-    background: state.selectProps.className == 'absent' ? 'red' : state.selectProps.className == 'present' ? 'yellow' : state.selectProps.className == 'correct' ? 'green' : '#ffffff'
-    
+    background: state.selectProps.className == 'absent' ? 'red' : state.selectProps.className == 'present' ? 'yellow' : state.selectProps.className == 'correct' ? 'green' : '#ffffff',
+    color: 'black',
+    width: '180px',
+    padding: '3px',
   }
   ),  option: (styles, { isDisabled }) => {
     return {
       ...styles,
-      backgroundColor: isDisabled ? "#A0A0A0" : "#272727",
-      color: "#FFFFFF",
+      backgroundColor:"#fff",
+      color: "black",
       "font-family": "Roboto",
       "text-transform": "uppercase"
     }
@@ -20,7 +22,6 @@ const customStyles = {
 
 
 const GameDropDowns = (props) => {
-  console.log(props)
   let value =  '' 
   let evaluations = null
   let row = props.row
@@ -45,6 +46,7 @@ const GameDropDowns = (props) => {
         classNamePrefix="custom-react-select"
         onChange={(item, index) => props.onChange(item, index)}
         options={props.options}
+        isClearable={true}
         styles={customStyles}
         isFocused={true}
         placeholder={'Type to search'}

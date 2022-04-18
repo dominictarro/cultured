@@ -65,8 +65,12 @@ class HomePage extends Component {
           alert('Fill out all required boxes before submitting')
       }
       else if(isEqual(this.state.choices, this.state.correctAnswer)){
+        let memeState = this.state.memeState
+        memeState.gameStatus = 'Winner'
+        window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
         alert('Congrats you guessed correctly')
-      
+
+    
       }else{
         let evaluationsArray = clone(this.state.evaluations)
         let guess = this.state.guessNumber
@@ -88,6 +92,9 @@ class HomePage extends Component {
       let choiceArray = clone(this.state.choices)
       if(item !== null){
         choiceArray[index] = item.value
+        this.setState({choices: choiceArray})
+      }else if(item == null){
+        choiceArray[index] = item
         this.setState({choices: choiceArray})
       }
       let memeState = this.state.memeState
