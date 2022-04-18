@@ -13,7 +13,7 @@ class NavBar extends Component {
         return(
     <Container>
         <NavContainer>
-            <h2>Cultured.</h2>
+            <h2>cultured.</h2>
         </NavContainer>
     </Container>
         )
