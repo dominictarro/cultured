@@ -70,3 +70,7 @@
   display: inline-flex;
   width: 200px;
 }
+
+.custom-react-select-container:disabled{
+  color: red;
+}
