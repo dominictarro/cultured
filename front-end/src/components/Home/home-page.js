@@ -57,6 +57,7 @@ class HomePage extends Component {
     this.setState({options: options})
 
     }
+  
     checkSubmittal(){
       if(this.state.guessNumber==6){
         alert(`Better luck next time the correct answer was ${this.state.correctAnswer.toString().replaceAll(',', ' ')}`)
@@ -126,14 +127,24 @@ class HomePage extends Component {
     if (this.state.options.length == 0) {
       return <div />
   }
-    return ( 
 
+    var width = this.state.memeState.meme.width;
+    var height = this.state.memeState.meme.height;
+    var scale;
+    if (width > height) {
+      scale = 600 / width;
+    } else {
+      scale = 500 / height;
+    }
+    width = Math.floor(width * scale)
+    height = Math.floor(height * scale);
+    return ( 
 
       <React.Fragment>
           <NavBar />
           <div className='homePage'>
             <div className='imgContainer'>
-                <img src={this.state.url} alt='/' />
+                <img src={this.state.url} alt='/' style={{'width': width, 'height': height}}/>
             </div>
             <div className="optionsContainer">
                 <ul className='gameDropDowns'>
