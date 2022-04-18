@@ -10,6 +10,7 @@ README.md
 
 # Temporary files
 *.log
+venv/
 
 # Developer files
 design/
