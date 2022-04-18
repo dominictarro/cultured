@@ -14,6 +14,7 @@ const statisticsKey = 'cultured-statistics';
  */
 export function getLocalGameState() {
     try {
+        console.log("Getting local game state");
         return JSON.parse(window.localStorage.getItem(gameStateKey));
     } catch(e) {
         console.log(e);
@@ -26,6 +27,7 @@ export function getLocalGameState() {
  * @param {JSON} gameState Game state JSON
  */
 export function updateLocalGameState(gameState) {
+    console.log("Updating local game state");
     window.localStorage.setItem(gameStateKey, JSON.stringify(gameState));
 }
 
@@ -44,15 +46,16 @@ export async function getGameState() {
         if (today === dayOfLastUpdate) {
             return gameState;
         }
+        console.log("Game state expired");
+    } else {
+        console.log("Game state does not exist");
     }
-    else{
-        const memeState = await getMemeState();
-        gameState = buildNewGameState(memeState);
-        updateLocalGameState(gameState);
-        return gameState;
-    }
-}
     // If it reaches here, the game expired or it is a new player
+    const memeState = await getMemeState();
+    gameState = buildNewGameState(memeState);
+    updateLocalGameState(gameState);
+    return gameState;
+}
 
 // MEME STATE
 /**
@@ -60,6 +63,7 @@ export async function getGameState() {
  * @returns {JSON} Meme state JSON
  */
 export function getLocalMemeState() {
+    console.log("Getting local meme state");
     try {
         return JSON.parse(window.localStorage.getItem(memeStateKey));
     } catch(e) {
@@ -74,6 +78,7 @@ export function getLocalMemeState() {
  * @returns {Promise<JSON>} Meme state JSON
  */
  export async function getRemoteMemeState() {
+    console.log("Getting remote meme state");
     try {
         const response = await fetch('/today');
         return response.json();
@@ -88,6 +93,7 @@ export function getLocalMemeState() {
  * @param {JSON} memeState Meme state JSON
  */
 export function updateLocalMemeState(memeState) {
+    console.log("Updating local meme state");
     window.localStorage.setItem(memeStateKey, JSON.stringify(memeState));
 }
 
@@ -106,6 +112,9 @@ export async function getMemeState() {
         if (today === dayOfLastUpdate) {
             return memeState;
         }
+        console.log("Meme state expired");
+    } else {
+        console.log("Meme state does not exist");
     }
     // If it reaches here, the game expired or it is a new player
     memeState = await getRemoteMemeState();
