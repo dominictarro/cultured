@@ -59,12 +59,18 @@ export function buildWordBank(choices) {
  * @returns {JSON} State JSON
  */
 export function buildNewGameState(memeState) {
+    const filteredChoices = memeState.choices.filter(
+        function(meme) {
+            return meme.solution.length > 2 && meme.solution.length < 5;
+        }
+    )
+    console.log(filteredChoices);
 
     var gameState = {
         'gameStatus': "IN_PROGRESS",
         'hardMode': false,
         'rowIndex': 0,
-        'meme': chooseRandom(memeState.choices)
+        'meme': chooseRandom(filteredChoices)
     };
 
     // Select a subset of words that includes the solution words
