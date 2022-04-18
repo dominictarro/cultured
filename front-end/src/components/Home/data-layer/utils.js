@@ -9,7 +9,7 @@
  */
  export function shuffle(array) {
     let currentIndex = array.length,  randomIndex;
-
+    array = deepClone(array);
     // While there remain elements to shuffle.
     while (currentIndex !== 0) {
   
@@ -79,4 +79,16 @@ export function arrayCounts(array) {
             counts[el] = 1;
         }
     }
+}
+
+/**
+ * Chooses `size` random elements from an array with no replacement.
+ * @param {Array} array Array to select from
+ * @param {Integer} size Number of elements to select
+ * @returns {Array} Random subset of the array
+ */
+export function chooseRandomNoReplacement(array, size) {
+    array = shuffle(array);
+    var randomIndex = Math.floor(Math.random()*(array.length - size));
+    return array.slice(randomIndex, randomIndex + size)
 }

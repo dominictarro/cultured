@@ -70,12 +70,16 @@ def format_memes_from_api_result(api_result: dict) -> list:
         {
             "id": "181913649",
             "solution": ["Drake", "Hotline", "Bling"],
-            "url": "https://i.imgflip.com/30b1gx.jpg"
+            "url": "https://i.imgflip.com/30b1gx.jpg",
+            "width": 1200,
+            "height": 1200
         },
         {
             "id": "87743020",
             "solution": ["Two", "Buttons"],
-            "url": "https://i.imgflip.com/1g8my4.jpg"
+            "url": "https://i.imgflip.com/1g8my4.jpg",
+            "width": 600,
+            "height": 908
         },
     ]
     ```
@@ -94,8 +98,6 @@ def format_memes_from_api_result(api_result: dict) -> list:
 
             # Don't care about number of text boxes the meme uses
             doc.pop('box_count')
-            doc.pop('width')
-            doc.pop('height')
             memes.append(doc)
         except Exception:
             logger.error(f"could not format meme document: {traceback.format_exc()}")
