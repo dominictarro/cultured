@@ -2,7 +2,7 @@
  * Methods for creating, operating, and completing games in the client.
  */
 import { updateLocalGameState } from "./data";
-import { arrayCounts, chooseRandom, deepClone, unique } from "./utils";
+import { arrayCounts, chooseRandom, deepClone, shuffle, unique } from "./utils";
 
 const N_ATTEMPTS = 6;
 
@@ -65,7 +65,7 @@ export function buildNewGameState(memeState) {
         'rowIndex': 0,
         'meme': chooseRandom(memeState.choices)
     };
-    gameState['wordBank'] = unique(buildWordBank(memeState.choices));
+    gameState['wordBank'] = unique(buildWordBank(memeState.choices)).sort();
     gameState['boardState'] = new Array(N_ATTEMPTS);
     gameState['evaluations'] = new Array(N_ATTEMPTS);
     gameState['columns'] = gameState.meme.solution.length;
