@@ -3,7 +3,7 @@ import NavBar from '../Navigation/navbar';
 import '../../App.css'
 import GameDropDowns from './guess-dropdowns'
 import { getGameState, getLocalGameState } from './data-layer/data';
-import { clone, isEqual } from 'lodash'
+import { clone, isEqual, uniqueId } from 'lodash'
 import { evaluateResponse } from './data-layer/game';
 
 class HomePage extends Component {
@@ -66,6 +66,7 @@ class HomePage extends Component {
         guess++
         let correct = isEqual(this.state.choices, this.state.correctAnswer)
         let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
+        console.log(check)
         let winLose = 'Win' ? correct : 'Lose'
         this.setState({guessNumber: guess, choices: []})
         if(!correct){
@@ -112,7 +113,7 @@ class HomePage extends Component {
             </div>
             <div className="optionsContainer">
                 <ul className='gameDropDowns'>
-                <li className='guessRows'>
+                <li key={uniqueId} className='guessRows'>
                       {this.state.answers.map((item, index) =>
                         <GameDropDowns
                         onChange={(item)=>this.onChange(item, index)}
@@ -121,7 +122,7 @@ class HomePage extends Component {
                         index={index}
                           options={this.state.options}
                           />)}
-                        <button onClick={this.checkSubmittal}>
+                        <button disabled={disable1} onClick={this.checkSubmittal}>
                           Check
                         </button>
                     </li>
@@ -134,7 +135,7 @@ class HomePage extends Component {
                         index={index}
                           options={this.state.options}
                           />)}
-                            <button onClick={this.checkSubmittal}>
+                          <button disabled={disable2} onClick={this.checkSubmittal}>
                           Check
                         </button>
                     </li> 
@@ -147,7 +148,7 @@ class HomePage extends Component {
                         index={index}
                           options={this.state.options}
                           />)}
-                            <button onClick={this.checkSubmittal}>
+                            <button disabled={disable3} onClick={this.checkSubmittal}>
                           Check
                         </button>
                     </li> 
@@ -160,7 +161,7 @@ class HomePage extends Component {
                         index={index}
                           options={this.state.options}
                           />)}
-                            <button onClick={this.checkSubmittal}>
+                            <button disabled={disable4} onClick={this.checkSubmittal}>
                           Check
                         </button>
                     </li> 
@@ -173,7 +174,7 @@ class HomePage extends Component {
                         index={index}
                           options={this.state.options}
                           />)}
-                            <button onClick={this.checkSubmittal}>
+                            <button disabled={disable5} onClick={this.checkSubmittal}>
                           Check
                         </button>
                     </li> 
@@ -186,7 +187,7 @@ class HomePage extends Component {
                         onChange={(item)=>this.onChange(item, index)}
                         options={this.state.options}
                           />)}
-                            <button onClick={this.checkSubmittal}>
+                        <button  disabled={disable6} onClick={this.checkSubmittal}>
                           Check
                         </button>
                     </li>
