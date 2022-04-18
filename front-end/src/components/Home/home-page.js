@@ -4,7 +4,7 @@ import '../../App.css'
 import GameDropDowns from './guess-dropdowns'
 import { getGameState, getLocalGameState, updateLocalGameState } from './data-layer/data';
 import { clone, isEqual, uniqueId } from 'lodash'
-import { evaluateResponse } from './data-layer/game';
+import { evaluateResponse, removeAbsetFromWordBank } from './data-layer/game';
 
 class HomePage extends Component {
     constructor(props) {
@@ -32,7 +32,7 @@ class HomePage extends Component {
     }
 
     async setupGame(){
-      let src = await getGameState()
+        let src = await getGameState()
         // store intervalId in the state so it can be accessed later:
       
         let url = src.meme.url
@@ -71,16 +71,22 @@ class HomePage extends Component {
         window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
         alert('Congrats you guessed correctly')
 
-    
+      
       }else{
         let evaluationsArray = clone(this.state.evaluations)
         let guess = this.state.guessNumber
         guess++
         let correct = isEqual(this.state.choices, this.state.correctAnswer)
         let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
+        console.log(check);
         
         evaluationsArray.push(check)
         this.setState({evaluations: evaluationsArray})
+        console.log(this.state);
+        console.log("Updating word bank");
+        this.state.memeState.wordBank = removeAbsetFromWordBank(this.state.choices, check, this.state.memeState.wordBank);
+        console.log("new word bank length: " + this.state.memeState.wordBank.length);
+        this.buildDropDown(this.state.memeState.wordBank);
 
         if(!correct){
           this.updateLocal(evaluationsArray[0], this.state.choices)
