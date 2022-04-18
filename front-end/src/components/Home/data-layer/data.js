@@ -45,12 +45,14 @@ export async function getGameState() {
             return gameState;
         }
     }
-    // If it reaches here, the game expired or it is a new player
-    const memeState = await getMemeState();
-    gameState = buildNewGameState(memeState);
-    updateLocalGameState(gameState);
-    return gameState;
+    else{
+        const memeState = await getMemeState();
+        gameState = buildNewGameState(memeState);
+        updateLocalGameState(gameState);
+        return gameState;
+    }
 }
+    // If it reaches here, the game expired or it is a new player
 
 // MEME STATE
 /**
