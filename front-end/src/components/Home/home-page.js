@@ -52,16 +52,22 @@ class HomePage extends Component {
 
     }
     checkSubmittal(){
-
-      if(this.state.choices.length !==  this.state.correctAnswer.length){
+      if(this.state.guessNumber==6){
+        alert(`Better luck next time the correct answer was ${this.state.correctAnswer.toString().replaceAll(',', ' ')}`)
+      }
+      else if(this.state.choices.length !==  this.state.correctAnswer.length){
           alert('Fill out all required boxes before submitting')
+      }
+      else if(isEqual(this.state.choices, this.state.correctAnswer)){
+        alert('Congrats you guessed correctly')
+      
       }else{
         let guess = this.state.guessNumber
         guess++
         let correct = isEqual(this.state.choices, this.state.correctAnswer)
         let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
         let winLose = 'Win' ? correct : 'Lose'
-        this.setState({guessNumber: guess})
+        this.setState({guessNumber: guess, choices: []})
         if(!correct){
           this.updateLocal(winLose)
         }
