@@ -24,7 +24,7 @@ while state.memes is None:
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-##@cross_origin()
+@cross_origin()
 def serve(path):
     try:
         logger.info(f"'{request.endpoint}' requested from '{request.remote_addr}' by agent '{request.user_agent}'")
