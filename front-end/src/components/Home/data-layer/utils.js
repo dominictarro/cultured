@@ -79,6 +79,7 @@ export function arrayCounts(array) {
             counts[el] = 1;
         }
     }
+    return counts;
 }
 
 /**

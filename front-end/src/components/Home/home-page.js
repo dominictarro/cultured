@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import NavBar from '../Navigation/navbar';
 import '../../App.css'
 import GameDropDowns from './guess-dropdowns'
-import { getGameState, getLocalGameState } from './data-layer/data';
+import { getGameState, getLocalGameState, updateLocalGameState } from './data-layer/data';
 import { clone, isEqual, uniqueId } from 'lodash'
-import { evaluateResponse } from './data-layer/game';
+import { evaluateResponse, removeAbsetFromWordBank } from './data-layer/game';
 
 class HomePage extends Component {
     constructor(props) {
@@ -17,6 +17,7 @@ class HomePage extends Component {
             answers: [],
             choices: [],
             evaluations: [],
+            winner: false,
 
             guessNumber: 0
         }
@@ -32,17 +33,21 @@ class HomePage extends Component {
     }
 
     async setupGame(){
-      let src = getLocalGameState()
+        let src = await getGameState()
         // store intervalId in the state so it can be accessed later:
       
         let url = src.meme.url
         let lastGuess = 1
-        if( src.lastGuess !== undefined){
+        let winStatus = false
+        if(src.lastGuess !== undefined){
           lastGuess = src.lastGuess + 1
         }
+        if(src.gameStatus =='Winner') winStatus = true
+        
+
         let  answers = src.meme.solution
         let correctAnswer = src.meme.solution;
-        this.setState({url: url, answers: answers, correctAnswer: correctAnswer , memeState: src, guessNumber : lastGuess})
+        this.setState({url: url, answers: answers, correctAnswer: correctAnswer , memeState: src, guessNumber : lastGuess, winner: winStatus })
     
         this.buildDropDown(src.wordBank)
 
@@ -57,6 +62,22 @@ class HomePage extends Component {
     this.setState({options: options})
 
     }
+
+    markWinner(){
+      let memeState = this.state.memeState
+      memeState.gameStatus = 'Winner'
+      window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
+      let evaluationsArray = clone(this.state.evaluations)
+      let guess = this.state.guessNumber
+      guess++
+      let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
+      
+      evaluationsArray.push(check)
+      this.setState({evaluations: evaluationsArray, winner: true})
+
+      this.updateLocal(evaluationsArray[0], this.state.choices)
+    }
+
     checkSubmittal(){
       if(this.state.guessNumber==6){
         alert(`Better luck next time the correct answer was ${this.state.correctAnswer.toString().replaceAll(',', ' ')}`)
@@ -69,17 +90,23 @@ class HomePage extends Component {
         memeState.gameStatus = 'Winner'
         window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
         alert('Congrats you guessed correctly')
+        this.markWinner()
 
-    
       }else{
         let evaluationsArray = clone(this.state.evaluations)
         let guess = this.state.guessNumber
         guess++
         let correct = isEqual(this.state.choices, this.state.correctAnswer)
         let check = evaluateResponse(this.state.correctAnswer,this.state.choices)
+        console.log(check);
         
         evaluationsArray.push(check)
         this.setState({evaluations: evaluationsArray})
+        console.log(this.state);
+        console.log("Updating word bank");
+        this.state.memeState.wordBank = removeAbsetFromWordBank(this.state.choices, check, this.state.memeState.wordBank);
+        console.log("new word bank length: " + this.state.memeState.wordBank.length);
+        this.buildDropDown(this.state.memeState.wordBank);
 
         if(!correct){
           this.updateLocal(evaluationsArray[0], this.state.choices)
@@ -112,25 +139,38 @@ class HomePage extends Component {
     window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
 
   }
+
+
+
   render() {
-    let disable1 =  this.state.guessNumber ==  1 ? false : true   
-    let disable2 =  this.state.guessNumber ==  2 ? false : true 
-    let disable3 =  this.state.guessNumber ==  3 ? false : true 
-    let disable4 =  this.state.guessNumber ==  4 ? false : true 
-    let disable5 =  this.state.guessNumber ==  5 ? false : true 
-    let disable6 =  this.state.guessNumber ==  6 ? false : true 
+    let disable1 = this.state.winner ? true: this.state.guessNumber ==  1 ? false : true   
+    let disable2 =  this.state.winner ? true: this.state.guessNumber ==  2 ? false : true 
+    let disable3 =  this.state.winner ? true: this.state.guessNumber ==  3 ? false : true 
+    let disable4 =  this.state.winner ? true: this.state.guessNumber ==  4 ? false : true 
+    let disable5 =  this.state.winner ? true: this.state.guessNumber ==  5 ? false : true 
+    let disable6 =  this.state.winner ? true: this.state.guessNumber ==  6 ? false : true 
     
     if (this.state.options.length == 0) {
       return <div />
   }
-    return ( 
 
+    var width = this.state.memeState.meme.width;
+    var height = this.state.memeState.meme.height;
+    var scale;
+    if (width > height) {
+      scale = 600 / width;
+    } else {
+      scale = 500 / height;
+    }
+    width = Math.floor(width * scale)
+    height = Math.floor(height * scale);
+    return ( 
 
       <React.Fragment>
           <NavBar />
           <div className='homePage'>
             <div className='imgContainer'>
-                <img src={this.state.url} alt='/' />
+                <img src={this.state.url} alt='/' style={{'width': width, 'height': height}}/>
             </div>
             <div className="optionsContainer">
                 <ul className='gameDropDowns'>
