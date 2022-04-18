@@ -5,6 +5,7 @@ import { updateLocalGameState } from "./data";
 import { arrayCounts, chooseRandom, deepClone, chooseRandomNoReplacement, unique, shuffle } from "./utils";
 
 const N_ATTEMPTS = 6;
+const WORDBANK_SIZE = 30;
 
 /**
  * Constructs a word bank from the words used in all possible options.
@@ -75,7 +76,7 @@ export function buildNewGameState(memeState) {
         }
     );
     // Choose a number of non-solution words to hit 50 options
-    gameState.wordBank.push(...chooseRandomNoReplacement(remainingWordBank, 50 - gameState.wordBank.length));
+    gameState.wordBank.push(...chooseRandomNoReplacement(remainingWordBank, WORDBANK_SIZE - gameState.wordBank.length));
     gameState.wordBank.sort();
     gameState['boardState'] = new Array(N_ATTEMPTS);
     gameState['evaluations'] = new Array(N_ATTEMPTS);
