@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 
-import { Container, NavContainer } from './navbar-style'
+import { Container, NavContainer, HelpContainer } from './navbar-style'
 
 class NavBar extends Component {
     constructor(props) {
@@ -11,11 +11,13 @@ class NavBar extends Component {
 
     render(){
         return(
-    <Container>
-        <NavContainer>
-            <h2>cultured.</h2>
-        </NavContainer>
-    </Container>
+            <Container>
+                <NavContainer>
+                    <h2>cultured.</h2>
+                </NavContainer>
+
+
+            </Container>
         )
     }
 }
