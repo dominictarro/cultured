@@ -14,7 +14,7 @@ from flask_cors import CORS, cross_origin
 logger = logging.getLogger('server')
 app = Flask(__name__, static_folder='front-end/build')
 app.json_encoder = DailyMemeStateEncoder
-#cors = CORS(app)
+cors = CORS(app)
 
 state = DailyMemeState(None, None)
 updater = begin_daily_meme_state_updater(state, 60)
