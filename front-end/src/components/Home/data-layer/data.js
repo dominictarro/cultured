@@ -40,18 +40,19 @@ export async function getGameState() {
     // New player if false
     if (gameState !== null) {
         const today = new Date().getDay();
+        var memeState = getLocalMemeState();
         // Automatically converts from UTC to local time
-        const dayOfLastUpdate = new Date(gameState.updatedAt).getDay();
+        const dayOfLastUpdate = new Date(memeState.updatedAt).getDay();
         // Expired game if false
         if (today === dayOfLastUpdate) {
             return gameState;
         }
-        console.log("Game state expired");
+        console.log("Game state expired: today - " + today + ", updated - " + dayOfLastUpdate);
     } else {
         console.log("Game state does not exist");
     }
     // If it reaches here, the game expired or it is a new player
-    const memeState = await getMemeState();
+    memeState = await getMemeState();
     gameState = buildNewGameState(memeState);
     updateLocalGameState(gameState);
     return gameState;
