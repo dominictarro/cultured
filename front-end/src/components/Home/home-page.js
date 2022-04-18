@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NavBar from '../Navigation/navbar';
 import '../../App.css'
 import GameDropDowns from './guess-dropdowns'
-import { getGameState, getLocalGameState } from './data-layer/data';
+import { getGameState, getLocalGameState, updateLocalGameState } from './data-layer/data';
 import { clone, isEqual, uniqueId } from 'lodash'
 import { evaluateResponse } from './data-layer/game';
 
@@ -32,7 +32,7 @@ class HomePage extends Component {
     }
 
     async setupGame(){
-      let src = getLocalGameState()
+      let src = await getGameState()
         // store intervalId in the state so it can be accessed later:
       
         let url = src.meme.url
@@ -112,6 +112,9 @@ class HomePage extends Component {
     window.localStorage.setItem('cultured-game-state', JSON.stringify(memeState))
 
   }
+
+
+
   render() {
     let disable1 =  this.state.guessNumber ==  1 ? false : true   
     let disable2 =  this.state.guessNumber ==  2 ? false : true 
